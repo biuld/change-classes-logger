@@ -14,13 +14,13 @@
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+    A tool to help you manually hotswap changed classes.
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
@@ -34,4 +34,9 @@
                    anchor="right"
                    factoryClass="com.github.biuld.changeclassseslogger.ChangedClassesToolWindowFactory"/>
     </extensions>
+
+    <projectListeners>
+        <listener class="com.github.biuld.changeclassseslogger.listener.DebuggerSessionListener"
+                  topic="com.intellij.debugger.impl.DebuggerManagerListener"/>
+    </projectListeners>
 </idea-plugin>
