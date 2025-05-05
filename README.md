@@ -71,4 +71,10 @@ git clone https://github.com/biuld/change-classes-logger.git
 
 ## 许可证
 
-本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。 
+本项目采用 GNU 通用公共许可证 v3.0 发布。详见 [LICENSE](LICENSE) 文件。
+
+本程序是自由软件：你可以根据自由软件基金会发布的 GNU 通用公共许可证第 3 版或更高版本的规定重新分发和/或修改它。
+
+本程序是基于希望它有用而分发的，但没有任何保证；甚至没有对适销性或特定用途适用性的隐含保证。有关更多详细信息，请参阅 GNU 通用公共许可证。
+
+你应该已经收到了一份 GNU 通用公共许可证的副本。如果没有，请访问 <https://www.gnu.org/licenses/>。 
