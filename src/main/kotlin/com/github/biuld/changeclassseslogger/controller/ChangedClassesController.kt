@@ -35,7 +35,7 @@ class ChangedClassesController(
     private val fileScanner: FileScannerService = FileScannerServiceImpl(project)
     private val hotSwapper: HotSwapService = HotSwapServiceImpl(project, notificationService)
 
-    // 视图组件
+    // View components
     private val leftPanel = LeftPanel { refreshChangedClasses() }
     private val searchPanel = SearchPanel { state.filterFiles(it) }
     private val tablePanel = TablePanel { f, e -> showFilePopup(f, e) }
@@ -51,10 +51,10 @@ class ChangedClassesController(
     )
 
     init {
-        logger.info("初始化ChangedClassesController")
+        logger.info("Initializing ChangedClassesController")
         coroutineScope.launch {
             state.filteredFiles.collectLatest { files ->
-                logger.debug("更新文件列表，当前文件数量：${files.size}")
+                logger.debug("Updating file list, current file count: ${files.size}")
                 tablePanel.updateFiles(files)
                 countPanel.updateCount(files.size)
             }
@@ -77,27 +77,27 @@ class ChangedClassesController(
                 val files = fileScanner.scanFiles(session)
 
                 if (files.isEmpty()) {
-                    notificationService.showInfo("没有变更")
+                    notificationService.showInfo("No changes")
                 } else {
                     state.updateFiles(files)
                 }
             } catch (e: Exception) {
-                logger.error("刷新文件列表时发生异常", e)
-                notificationService.showError("发生异常：${e.message}")
+                logger.error("Error occurred while refreshing file list", e)
+                notificationService.showError("Error occurred: ${e.message}")
             }
         }
     }
 
     private fun showFilePopup(f: ClassFileInfo, e: MouseEvent) {
-        logger.debug("显示文件${f.path}的弹出菜单")
+        logger.debug("Showing popup menu for file ${f.path}")
         val actionGroup = DefaultActionGroup().apply {
-            add(object : AnAction("打开文件") {
+            add(object : AnAction("Open File") {
                 override fun actionPerformed(event: AnActionEvent) {
                     val virtualFile = LocalFileSystem.getInstance().findFileByPath(f.path)
                     if (virtualFile != null) {
                         FileEditorManager.getInstance(project).openFile(virtualFile, true)
                     } else {
-                        notificationService.showError("无法找到文件：${f.path}")
+                        notificationService.showError("Cannot find file: ${f.path}")
                     }
                 }
             })
@@ -118,7 +118,7 @@ class ChangedClassesController(
     }
 
     override fun dispose() {
-        logger.info("清理ChangedClassesController资源")
+        logger.info("Cleaning up ChangedClassesController resources")
         coroutineScope.cancel()
         leftPanel.dispose()
         searchPanel.dispose()

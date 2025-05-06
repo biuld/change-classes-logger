@@ -27,7 +27,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup id="changed-classes-logger.notifications"
                          displayType="BALLOON"/>
-        <!-- 注册Tool Window -->
+        <!-- Register Tool Window -->
         <toolWindow id="Changed Classes"
                    secondary="true"
                    icon="AllIcons.General.Modified"

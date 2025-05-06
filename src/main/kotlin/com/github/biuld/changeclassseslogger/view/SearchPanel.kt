@@ -18,7 +18,7 @@ class SearchPanel(private val onSearch: (String) -> Unit) : BasePanel() {
     }
 
     init {
-        searchField.putClientProperty("JTextField.placeholderText", "请输入文件名")
+        searchField.putClientProperty("JTextField.placeholderText", "Enter class name")
         searchField.maximumSize = JBUI.size(Int.MAX_VALUE, searchField.preferredSize.height)
         searchField.document.addDocumentListener(documentListener)
         panel.add(searchField, BorderLayout.CENTER)

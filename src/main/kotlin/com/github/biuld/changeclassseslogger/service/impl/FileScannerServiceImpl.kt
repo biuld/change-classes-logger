@@ -24,7 +24,7 @@ class FileScannerServiceImpl(private val project: Project) :
     private val state = project.getService(ChangedClassesState::class.java)
 
     override suspend fun scanFiles(session: DebuggerSession): List<ClassFileInfo> = withContext(Dispatchers.IO) {
-        logger.info("开始扫描项目文件")
+        logger.info("Starting to scan project files")
         state.startScan()
         try {
             val classpath = OrderEnumerator.orderEntries(project).classes().roots
@@ -48,7 +48,7 @@ class FileScannerServiceImpl(private val project: Project) :
 
                             ClassFileInfo(canonicalPath, qualifiedName)
                         }
-                    logger.info("扫描 $rootPath，共${fs.size}个文件")
+                    logger.info("Scanned $rootPath, total ${fs.size} files")
                     fs
                 }
             }.awaitAll()
@@ -57,7 +57,7 @@ class FileScannerServiceImpl(private val project: Project) :
 
             files
         } catch (e: Exception) {
-            logger.error("扫描文件时发生异常", e)
+            logger.error("Error occurred while scanning files", e)
             throw e
         } finally {
             state.stopScan()

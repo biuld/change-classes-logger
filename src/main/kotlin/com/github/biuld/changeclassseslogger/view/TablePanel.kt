@@ -20,7 +20,7 @@ class TablePanel(
 
     init {
         tableModel = DefaultTableModel().apply {
-            addColumn("文件名")
+            addColumn("File Name")
         }
         mouseListener = createTableMouseListener()
         table = JBTable(tableModel).apply {

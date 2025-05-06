@@ -31,18 +31,18 @@ class HotSwapServiceImpl(
                 return@executeOnPooledThread
             }
 
-            // 获取当前选中的文件
+            // Get currently selected file
             val hotswapFile = HotSwapFile(File(f.path))
 
             ApplicationManager.getApplication().invokeLater({
                 val progress = HotSwapProgressImpl(project)
                 progress.setSessionForActions(session)
-                // 创建当前会话的修改类映射
+                // Create modified classes map for current session
                 val modifiedClasses = mapOf(session to mapOf(f.qualifiedName to hotswapFile))
 
                 logger.info("HotSwapping session:[${session.sessionName}], state:[${session.state}]")
 
-                // 执行热重载
+                // Execute hot reload
                 ApplicationManager.getApplication().executeOnPooledThread {
                     reloadModifiedClasses(modifiedClasses, progress)
                 }
