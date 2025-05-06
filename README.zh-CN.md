@@ -1,8 +1,18 @@
-# Change-classes-logger
+# change-classes-logger
 
 一个帮助你在 IntelliJ IDEA 中手动热重载已修改类文件的插件。
 
 ![插件界面截图](img/screenshot.png)
+
+## 项目背景
+
+本插件提供了选择性热重载类文件的能力，解决了 IntelliJ IDEA 内置热重载机制的一个常见限制：
+
+### 必要性
+IntelliJ IDEA 默认的热重载机制会自动重载 classpath 下所有已修改的类文件。虽然这在大多数情况下是合理的，但当增量编译出现问题，错误地重新编译了不必要的类时，这个机制就会失效。本插件通过提供手动控制哪些类需要热重载的能力，有效解决了这个问题。
+
+### 可行性
+当只修改方法实现时，只需要重载当前类即可。即使是对类的成员和方法进行增删，我们也可以通过检查 git 状态来确定哪些类发生了变化，从而使用本工具进行有针对性的热重载。这种实现方式既简单又可靠，能够满足大多数开发场景的需求。
 
 ## 功能特点
 
@@ -20,11 +30,23 @@
 - Gradle 8.0 或更高版本
 
 ### 目标 IDE 版本
-- IntelliJ IDEA 2022.3 或更高版本
-   > - 目前仅在 IntelliJ IDEA 2025.1 版本上完成测试
+- IntelliJ IDEA 2025.1 或更高版本
 - 支持 Java 和 Kotlin 项目
 
 ## 安装方法
+
+### 方法一：从 Release 下载（推荐）
+
+1. 访问 [GitHub Releases](https://github.com/biuld/change-classes-logger/releases) 页面
+2. 下载最新版本的 `changed-classes-logger-*.zip` 文件
+3. 在 IntelliJ IDEA 中安装插件
+   - 打开 IntelliJ IDEA
+   - 进入 Settings/Preferences -> Plugins
+   - 点击齿轮图标，选择 "Install Plugin from Disk..."
+   - 选择下载的 zip 文件
+   - 重启 IDE
+
+### 方法二：从源码构建
 
 1. 克隆代码到本地
 ```bash

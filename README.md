@@ -1,10 +1,20 @@
-# Change-classes-logger
+# change-classes-logger
 
 A plugin that helps you manually hot-reload modified class files in IntelliJ IDEA.
 
 ![Plugin Screenshot](img/screenshot.png)
 
 [中文文档](README.zh-CN.md)
+
+## Rationale
+
+This plugin enables selective hot-swapping of classes, addressing a common limitation in IntelliJ IDEA's built-in hot-reload mechanism:
+
+### Necessity
+IntelliJ IDEA's default hot-reload mechanism automatically reloads all modified classes in the classpath. While this works well in most scenarios, it becomes problematic when incremental compilation fails and incorrectly recompiles unnecessary classes. This plugin provides manual control over which classes to hot-reload, effectively solving this issue.
+
+### Feasibility
+When only modifying method implementations, reloading the current class is sufficient. Even when adding or removing class members and methods, we can determine which classes have changed by checking git status, allowing targeted hot-swapping using this tool. This implementation approach is both simple and reliable, meeting the needs of most development scenarios.
 
 ## Features
 
@@ -22,11 +32,23 @@ A plugin that helps you manually hot-reload modified class files in IntelliJ IDE
 - Gradle 8.0 or higher
 
 ### Target IDE Version
-- IntelliJ IDEA 2022.3 or higher
-   > - Currently tested on IntelliJ IDEA 2025.1
+- IntelliJ IDEA 2025.1 or higher
 - Supports Java and Kotlin projects
 
 ## Installation
+
+### Method 1: Download from Release (Recommended)
+
+1. Visit the [GitHub Releases](https://github.com/biuld/change-classes-logger/releases) page
+2. Download the latest version of `changed-classes-logger-*.zip` file
+3. Install the plugin in IntelliJ IDEA
+   - Open IntelliJ IDEA
+   - Go to Settings/Preferences -> Plugins
+   - Click the gear icon and select "Install Plugin from Disk..."
+   - Select the downloaded zip file
+   - Restart the IDE
+
+### Method 2: Build from Source
 
 1. Clone the repository
 ```bash
