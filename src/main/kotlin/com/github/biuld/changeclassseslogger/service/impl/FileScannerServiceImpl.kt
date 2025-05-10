@@ -1,8 +1,10 @@
 package com.github.biuld.changeclassseslogger.service.impl
 
 import com.github.biuld.changeclassseslogger.model.ClassFileInfo
+import com.github.biuld.changeclassseslogger.model.ClassFileStatus
 import com.github.biuld.changeclassseslogger.service.FileScannerService
 import com.github.biuld.changeclassseslogger.state.ChangedClassesState
+import com.intellij.debugger.DebuggerManagerEx
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
@@ -53,12 +55,7 @@ class FileScannerServiceImpl(private val project: Project) :
                             ).replace("/", ".")
 
                             val classTimestamp = it.toFile().lastModified()
-                            val fileStatus = modifiedSourceFiles.entries
-                                .find { (sourceQualifiedName, _) -> qualifiedName.startsWith(sourceQualifiedName) }
-                                ?.let { (_, statusAndTimestamp) ->
-                                    val (status, sourceTimestamp) = statusAndTimestamp
-                                    if (classTimestamp > sourceTimestamp) status else FileStatus.NOT_CHANGED
-                                } ?: FileStatus.NOT_CHANGED
+                            val fileStatus = determineFileStatus(qualifiedName, classTimestamp, modifiedSourceFiles)
 
                             ClassFileInfo(
                                 path = canonicalPath,
@@ -74,7 +71,7 @@ class FileScannerServiceImpl(private val project: Project) :
                 .flatten()
                 .distinctBy { it.path }
                 .sortedWith(
-                    compareByDescending<ClassFileInfo> { it.fileStatus != FileStatus.NOT_CHANGED }
+                    compareByDescending<ClassFileInfo> { it.fileStatus != ClassFileStatus.NOT_CHANGED }
                         .thenBy { it.qualifiedName }
                 )
 
@@ -85,6 +82,30 @@ class FileScannerServiceImpl(private val project: Project) :
         } finally {
             state.stopScan()
         }
+    }
+
+    private fun determineFileStatus(
+        qualifiedName: String,
+        classTimestamp: Long,
+        modifiedSourceFiles: Map<String, Pair<FileStatus, Long>>
+    ): ClassFileStatus {
+        // First check if the file is newer than debug session
+        val debuggerManager = DebuggerManagerEx.getInstanceEx(project)
+        val session = debuggerManager.context.debuggerSession
+        if (session != null && session.isAttached) {
+            val sessionTimestamp = state.getSessionTimestamp(session)
+            if (sessionTimestamp != null && classTimestamp > sessionTimestamp) {
+                return ClassFileStatus.NEWER_THAN_DEBUG_SESSION
+            }
+        }
+
+        // If not newer than debug session, check VCS status
+        return modifiedSourceFiles.entries
+            .find { (sourceQualifiedName, _) -> qualifiedName.startsWith(sourceQualifiedName) }
+            ?.let { (_, statusAndTimestamp) ->
+                val (status, sourceTimestamp) = statusAndTimestamp
+                if (classTimestamp > sourceTimestamp) ClassFileStatus.fromVcsStatus(status) else ClassFileStatus.NOT_CHANGED
+            } ?: ClassFileStatus.NOT_CHANGED
     }
 
     private suspend fun getModifiedSourceFiles(): Map<String, Pair<FileStatus, Long>> {

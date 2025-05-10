@@ -1,7 +1,6 @@
 package com.github.biuld.changeclassseslogger.view
 
 import com.github.biuld.changeclassseslogger.model.ClassFileInfo
-import com.intellij.openapi.vcs.FileStatus
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.JBUI
@@ -92,12 +91,7 @@ class TablePanel(
             val file = value as? ClassFileInfo
             val component = super.getTableCellRendererComponent(table, file?.qualifiedName, isSelected, hasFocus, row, column)
             
-            val status = file?.fileStatus ?: FileStatus.NOT_CHANGED
-            val statusColor = when (status) {
-                FileStatus.MODIFIED -> FileStatus.MODIFIED.color
-                FileStatus.ADDED -> FileStatus.ADDED.color
-                else -> null
-            }
+            val statusColor = file?.fileStatus?.color
 
             border = if (statusColor != null) {
                 JBUI.Borders.compound(
