@@ -1,12 +1,16 @@
 package com.github.biuld.changeclassseslogger.view
 
 import com.github.biuld.changeclassseslogger.model.ClassFileInfo
+import com.intellij.openapi.vcs.FileStatus
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.JBUI
+import java.awt.Component
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JComponent
+import javax.swing.JTable
+import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
 
 class TablePanel(
@@ -28,6 +32,8 @@ class TablePanel(
             intercellSpacing = JBUI.emptySize()
             setDefaultEditor(Object::class.java, null)
             addMouseListener(mouseListener)
+            setDefaultRenderer(Object::class.java, VcsChangedRenderer())
+            rowHeight = JBUI.scale(24) // 增加行高以更好地显示标记
         }
         panel.viewport.view = table
         panel.border = JBUI.Borders.customLine(JBUI.CurrentTheme.CustomFrameDecorations.separatorForeground())
@@ -37,7 +43,7 @@ class TablePanel(
         files = newFiles
         tableModel.rowCount = 0
         files.forEach { file ->
-            tableModel.addRow(arrayOf(file.qualifiedName))
+            tableModel.addRow(arrayOf(file))
         }
     }
 
@@ -70,5 +76,39 @@ class TablePanel(
     override fun dispose() {
         table.removeMouseListener(mouseListener)
         tableModel.rowCount = 0
+    }
+
+    private inner class VcsChangedRenderer : DefaultTableCellRenderer() {
+        private val defaultBorder = JBUI.Borders.empty(0, 4)
+
+        override fun getTableCellRendererComponent(
+            table: JTable?,
+            value: Any?,
+            isSelected: Boolean,
+            hasFocus: Boolean,
+            row: Int,
+            column: Int
+        ): Component {
+            val file = value as? ClassFileInfo
+            val component = super.getTableCellRendererComponent(table, file?.qualifiedName, isSelected, hasFocus, row, column)
+            
+            val status = file?.fileStatus ?: FileStatus.NOT_CHANGED
+            val statusColor = when (status) {
+                FileStatus.MODIFIED -> FileStatus.MODIFIED.color
+                FileStatus.ADDED -> FileStatus.ADDED.color
+                else -> null
+            }
+
+            border = if (statusColor != null) {
+                JBUI.Borders.compound(
+                    JBUI.Borders.customLine(statusColor, 0, 4, 0, 0),
+                    JBUI.Borders.empty(0, 4)
+                )
+            } else {
+                defaultBorder
+            }
+            
+            return component
+        }
     }
 } 
