@@ -18,11 +18,15 @@ When only modifying method implementations, reloading the current class is suffi
 
 ## Features
 
-- Automatically detect and display modified class files
-- Support manual selection of classes for hot-reloading
-- Real-time display of modified file count
-- File search filtering support
-- User-friendly interface
+- Display all class files with color-coded status indicators:
+  - Blue: Modified files
+  - Green: Added files
+  - Purple: Files newer than debug session
+  - Default: Unchanged files
+- Manual selection for hot-reloading
+- Real-time class count display
+- File search filtering
+- Support for multiple source file types (.java, .kt, .scala, .groovy)
 - Enhanced hot-reloading capabilities when combined with [HotSwapHelper](https://github.com/gejun123456/HotSwapHelper)
 
 ## System Requirements
@@ -60,13 +64,13 @@ cd change-classes-logger
 ```bash
 ./gradlew buildPlugin
 ```
-After building, the plugin file will be located at `build/distributions/change-classes-logger-1.0-SNAPSHOT.zip`
+After building, the plugin file will be located at `build/distributions/change-classes-logger-1.1-SNAPSHOT.zip`
 
 3. Install the plugin in IntelliJ IDEA
    - Open IntelliJ IDEA
    - Go to Settings/Preferences -> Plugins
    - Click the gear icon and select "Install Plugin from Disk..."
-   - Select the `change-classes-logger-1.0-SNAPSHOT.zip` file
+   - Select the `change-classes-logger-1.1-SNAPSHOT.zip` file
    - Restart the IDE
 
 ## Usage
@@ -76,9 +80,14 @@ After building, the plugin file will be located at `build/distributions/change-c
 3. Build the project
    > Recommended to run Gradle's class task: `./gradlew classes`
 4. Find the "Changed Classes" tab in the IDE's right toolbar
-5. Click the refresh button to update the list of modified files
-6. Select the files you want to hot-reload in the right panel
-7. Right-click the selected files and choose "HotSwap" to perform hot-reloading
+5. Click the refresh button to update the list of files
+6. The files will be displayed with different colors indicating their status:
+   - Blue: Files that have been modified
+   - Green: Newly added files
+   - Purple: Files that are newer than the debug session
+   - Default color: Unchanged files
+7. Select the files you want to hot-reload in the right panel
+8. Right-click the selected files and choose "HotSwap" to perform hot-reloading
 
 ## Development
 
