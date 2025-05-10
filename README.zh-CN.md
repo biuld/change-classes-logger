@@ -16,11 +16,15 @@ IntelliJ IDEA 默认的热重载机制会自动重载 classpath 下所有已修�
 
 ## 功能特点
 
-- 自动检测并显示已修改的类文件
-- 支持手动选择要热重载的类
-- 实时显示修改文件数量
+- 显示所有类文件，并通过颜色标记不同状态：
+  - 蓝色：已修改的文件
+  - 绿色：新增的文件
+  - 紫色：比调试会话更新的文件
+  - 默认颜色：未更改的文件
+- 支持手动选择热重载
+- 实时显示类文件数量
 - 支持文件搜索过滤
-- 友好的用户界面
+- 支持多种源文件类型（.java, .kt, .scala, .groovy）
 - 与 [HotSwapHelper](https://github.com/gejun123456/HotSwapHelper) 配合使用可获得更强大的热重载能力
 
 ## 系统要求
@@ -58,13 +62,13 @@ cd change-classes-logger
 ```bash
 ./gradlew buildPlugin
 ```
-构建完成后，插件文件将位于 `build/distributions/change-classes-logger-1.0-SNAPSHOT.zip`
+构建完成后，插件文件将位于 `build/distributions/change-classes-logger-1.1-SNAPSHOT.zip`
 
 3. 在 IntelliJ IDEA 中安装插件
    - 打开 IntelliJ IDEA
    - 进入 Settings/Preferences -> Plugins
    - 点击齿轮图标，选择 "Install Plugin from Disk..."
-   - 选择刚才构建的 `change-classes-logger-1.0-SNAPSHOT.zip` 文件
+   - 选择刚才构建的 `change-classes-logger-1.1-SNAPSHOT.zip` 文件
    - 重启 IDE
 
 ## 使用方法
@@ -74,9 +78,14 @@ cd change-classes-logger
 3. 编译项目（Build Project）
    > 推荐执行 Gradle 的 class task：`./gradlew classes`
 4. 在 IDE 右侧工具栏中找到 "Changed Classes" 标签
-5. 点击刷新按钮（Refresh）更新已修改的文件列表
-6. 在右侧面板中选中需要热重载的文件
-7. 右键点击选中的文件，选择 "HotSwap" 进行热重载
+5. 点击刷新按钮（Refresh）更新文件列表
+6. 文件将以不同颜色显示其状态：
+   - 蓝色：已修改的文件
+   - 绿色：新增的文件
+   - 紫色：比调试会话更新的文件
+   - 默认颜色：未更改的文件
+7. 在右侧面板中选中需要热重载的文件
+8. 右键点击选中的文件，选择 "HotSwap" 进行热重载
 
 ## 开发
 

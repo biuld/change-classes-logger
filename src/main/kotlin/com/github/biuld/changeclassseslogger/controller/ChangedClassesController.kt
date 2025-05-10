@@ -64,21 +64,14 @@ class ChangedClassesController(
     fun getContent() = mainPanel.getContent()
 
     private fun refreshChangedClasses() {
-        val debuggerManager = DebuggerManagerEx.getInstanceEx(project)
-        val session = debuggerManager.context.debuggerSession
-
-        if (!state.isInitialized() || session == null || !session.isAttached) {
-            notificationService.showError("Cannot find debugger session")
-            return
-        }
-
         coroutineScope.launch {
             try {
-                val files = fileScanner.scanFiles(session)
+                val files = fileScanner.scanFiles()
 
                 if (files.isEmpty()) {
                     notificationService.showInfo("No changes")
                 } else {
+                    notificationService.showInfo("Scan completed")
                     state.updateFiles(files)
                 }
             } catch (e: Exception) {
@@ -103,6 +96,20 @@ class ChangedClassesController(
             })
             add(object : AnAction("HotSwap") {
                 override fun actionPerformed(event: AnActionEvent) {
+                    val debuggerManager = DebuggerManagerEx.getInstanceEx(project)
+                    val session = debuggerManager.context.debuggerSession
+
+                    if (!state.isInitialized() || session == null || !session.isAttached) {
+                        notificationService.showError("Cannot find debugger session")
+                        return
+                    }
+
+                    val sessionTimestamp = state.getSessionTimestamp(session)
+                    if (sessionTimestamp == null || f.timestamp <= sessionTimestamp) {
+                        notificationService.showError("No changes detected since last hot swap")
+                        return
+                    }
+
                     hotSwapper.reloadFile(f)
                 }
             })
