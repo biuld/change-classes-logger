@@ -2,7 +2,6 @@ package com.github.biuld.changeclassseslogger.service.impl
 
 import com.github.biuld.changeclassseslogger.model.ClassFileInfo
 import com.github.biuld.changeclassseslogger.service.HotSwapService
-import com.github.biuld.changeclassseslogger.service.NotificationService
 import com.intellij.debugger.DebuggerManagerEx
 import com.intellij.debugger.impl.DebuggerSession
 import com.intellij.debugger.impl.HotSwapFile
@@ -10,16 +9,16 @@ import com.intellij.debugger.impl.HotSwapManager
 import com.intellij.debugger.ui.HotSwapProgressImpl
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import java.io.File
 
-class HotSwapServiceImpl(
-    private val project: Project,
-    private val notificationService: NotificationService,
-) : HotSwapService {
+@Service(Service.Level.PROJECT)
+class HotSwapServiceImpl(private val project: Project) : HotSwapService {
     private val logger = Logger.getInstance(this::class.java)
+    private val notificationService = project.getService(NotificationServiceImpl::class.java)
 
     override fun reloadFile(f: ClassFileInfo) {
         ApplicationManager.getApplication().executeOnPooledThread {

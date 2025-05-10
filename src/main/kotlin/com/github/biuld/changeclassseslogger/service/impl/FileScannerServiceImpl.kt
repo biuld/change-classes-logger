@@ -6,6 +6,7 @@ import com.github.biuld.changeclassseslogger.service.FileScannerService
 import com.github.biuld.changeclassseslogger.state.ChangedClassesState
 import com.intellij.debugger.DebuggerManagerEx
 import com.intellij.openapi.application.readAction
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.OrderEnumerator
@@ -22,8 +23,8 @@ import org.jetbrains.uast.toUElement
 import java.nio.file.Path
 import kotlin.io.path.walk
 
-class FileScannerServiceImpl(private val project: Project) :
-    FileScannerService {
+@Service(Service.Level.PROJECT)
+class FileScannerServiceImpl(private val project: Project) : FileScannerService {
     private val logger = Logger.getInstance(this::class.java)
     private val CLASS_EXTENSION: String = ".class"
     private val SOURCE_FILE_EXTENSIONS = setOf(".java", ".kt", ".scala", ".groovy")
@@ -40,7 +41,6 @@ class FileScannerServiceImpl(private val project: Project) :
                 .distinctBy { it.path }
                 .map { it.path }
 
-            // 获取所有修改的源文件信息
             val modifiedSourceFiles = getModifiedSourceFiles()
 
             val files = classpath.map { rootPath ->

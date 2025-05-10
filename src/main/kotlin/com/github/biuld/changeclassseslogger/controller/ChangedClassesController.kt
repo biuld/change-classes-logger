@@ -1,11 +1,9 @@
 package com.github.biuld.changeclassseslogger.controller
 
 import com.github.biuld.changeclassseslogger.model.ClassFileInfo
-import com.github.biuld.changeclassseslogger.service.FileScannerService
-import com.github.biuld.changeclassseslogger.service.HotSwapService
-import com.github.biuld.changeclassseslogger.service.NotificationService
 import com.github.biuld.changeclassseslogger.service.impl.FileScannerServiceImpl
 import com.github.biuld.changeclassseslogger.service.impl.HotSwapServiceImpl
+import com.github.biuld.changeclassseslogger.service.impl.NotificationServiceImpl
 import com.github.biuld.changeclassseslogger.state.ChangedClassesState
 import com.github.biuld.changeclassseslogger.view.*
 import com.intellij.debugger.DebuggerManagerEx
@@ -14,6 +12,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
@@ -24,16 +23,17 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import java.awt.event.MouseEvent
 
+@Service(Service.Level.PROJECT)
 class ChangedClassesController(
-    private val project: Project,
-    private val notificationService: NotificationService
+    private val project: Project
 ) : Disposable {
 
     private val logger = Logger.getInstance(this::class.java)
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val state = project.getService(ChangedClassesState::class.java)
-    private val fileScanner: FileScannerService = FileScannerServiceImpl(project)
-    private val hotSwapper: HotSwapService = HotSwapServiceImpl(project, notificationService)
+    private val fileScanner = project.getService(FileScannerServiceImpl::class.java)
+    private val hotSwapper = project.getService(HotSwapServiceImpl::class.java)
+    private val notificationService = project.getService(NotificationServiceImpl::class.java)
 
     // View components
     private val leftPanel = LeftPanel { refreshChangedClasses() }
