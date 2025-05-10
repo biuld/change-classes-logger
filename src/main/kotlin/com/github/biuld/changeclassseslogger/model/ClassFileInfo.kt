@@ -5,5 +5,6 @@ import com.intellij.openapi.vcs.FileStatus
 data class ClassFileInfo(
     val path: String,
     val qualifiedName: String,
-    val fileStatus: FileStatus = FileStatus.NOT_CHANGED
-) 
+    val timestamp: Long,
+    val fileStatus: FileStatus = FileStatus.NOT_CHANGED,
+)

@@ -16,7 +16,7 @@ class CountPanel : BasePanel() {
     }
 
     fun updateCount(count: Int) {
-        countLabel.text = "Total $count changes"
+        countLabel.text = "Total $count classes"
     }
 
     override fun getContent(): JComponent = panel
